@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 )
-const RepoUrl string = "https://github.com/austinrtn/kayscript-installer/archive/refs/tags/1.0.tar.gz"
+const RepoUrl string = "https://github.com/austinrtn/kayscript-go-installer/archive/refs/tags/1.0.tar.gz"
 
 func DownloadRepo() error {
 	client := &http.Client{Timeout: 30 * time.Second}
