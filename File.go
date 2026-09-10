@@ -29,14 +29,21 @@ func GetHomeDir() string {
 	return home
 }
 
-func DownloadRepo() {
+func DownloadRepo(dir string) error {
 	client := &http.Client{Timeout: 30 * time.Second}
 
 	res, err := client.Get(RepoUrl)
 
 	if err != nil {
-		
+		return fmt.Errorf("download repositry :%w", err)
 	}
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		return fmt.Errorf("download repo: server returned %s", res.Status)
+	}
+	
+	return nil
 }
 
 func NewFile(name string, destPath string, mode os.FileMode, rootOwned bool) File {
