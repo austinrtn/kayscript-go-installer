@@ -29,7 +29,7 @@ func Unarchive(path string) error {
 	)
 }
 
-func Sudo() error {
+func SudoV() error {
 	return RunCmd(
 		"sudo",
 		"-v",
@@ -62,6 +62,16 @@ func MkDirSudo(path string) error {
 		"sudo",
 		"mkdir",
 		"-p",
+		path,
+	)
+}
+
+func ForceRmSudo(path string) error {
+	return RunCmd(
+		"sudo",
+		"rm",
+		"-f", 
+		
 		path,
 	)
 }

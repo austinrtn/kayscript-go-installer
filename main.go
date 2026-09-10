@@ -13,6 +13,18 @@ const ProjectDir string = "/var/lib/kayscript"
 var workDir string
 
 func main() {
+	option := os.Args[1]
+
+	if option == "--i" || option == "" {
+		install()
+	} else if option == "--r" {
+		uninstall()
+	} else {
+		panic("Invalid argument.\n--i: install kayscript\n--r: uninstall kayscript")
+	}
+}
+
+func install() {
 	setup()
 	defer deinit()
 
@@ -47,6 +59,24 @@ func main() {
 			panic(err)
 		}
 	}
+	fmt.Print("Kayscript Installed!\n")
+}
+
+func uninstall() {
+	err := cmds.SudoV()
+	targets, err := repo.NewTargets("")
+	if err != nil {
+		panic("Unable to initialize target files")
+	}
+
+	fmt.Print("Removing Files...\n")
+	for _, file := range targets.All() {
+		err := cmds.ForceRmSudo(file.DestPath)
+		if err != nil {
+			panic(fmt.Sprintf("Unable to remove file: %s", file.Name))
+		}
+	}
+	fmt.Print("Files Removed!\n")
 }
 
 func setup() {
@@ -57,7 +87,7 @@ func setup() {
 	}
 	
 	cmds.Cls()
-	if err = cmds.Sudo(); err != nil {
+	if err = cmds.SudoV(); err != nil {
 		panic(err)
 	}
 
