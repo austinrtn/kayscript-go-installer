@@ -17,7 +17,7 @@ type File struct {
 }
 
 func NewFile(name string, destPath string, mode os.FileMode, rootOwned bool, workDir string) File {
-	tmpPath := path.Join(workDir, name)
+	tmpPath := path.Join(workDir, "install_files", name)
 	return File{
 		Name:      name,
 		DestPath:  destPath,
