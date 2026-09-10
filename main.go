@@ -5,6 +5,7 @@ import (
 	"kayscript-installer/cmds"
 	"kayscript-installer/repo"
 	"os"
+	"path"
 	"path/filepath"
 )
 
@@ -34,8 +35,8 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Print("Installing...")
-
+	fmt.Print("Installing...\n")
+	os.Chdir(path.Join(workDir, "install_files"))
 	targets, err := repo.NewTargets(workDir)
 	if err != nil {
 		panic(err)
@@ -46,19 +47,11 @@ func main() {
 			panic(err)
 		}
 	}
-
-	entries, err := os.ReadDir(".")
-	if err != nil {
-		panic(err)
-	}
-
-	for _, entry := range entries {
-		fmt.Printf("%s\n", entry.Name())
-	}
 }
 
 func setup() {
-	err := os.MkdirAll(ProjectDir, 0o755)
+	// Need to use sudo 
+	err := cmds.MkDirSudo(ProjectDir)
 	if err != nil {
 		panic(err)
 	}

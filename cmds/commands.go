@@ -57,6 +57,15 @@ func InstallFileAsRoot(mode string, target string, dest string) error {
 	)
 }
 
+func MkDirSudo(path string) error {
+	return RunCmd(
+		"sudo",
+		"mkdir",
+		"-p",
+		path,
+	)
+}
+
 func Cls() {
 	fmt.Print("\033[H\033[2J")
 }

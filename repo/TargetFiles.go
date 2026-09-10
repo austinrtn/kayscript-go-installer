@@ -1,6 +1,8 @@
 package repo
 
-import "path/filepath"
+import (
+	"path/filepath"
+)
 
 type Targets struct {
 	UdevRule File
@@ -10,6 +12,7 @@ type Targets struct {
 	Kayscript   File
 }
 
+const ProjectDir string = "/var/lib/kayscript"
 func NewTargets(workDir string) (Targets, error) {
 	home, err := GetHomeDir()
 	if err != nil {
@@ -45,7 +48,7 @@ func NewTargets(workDir string) (Targets, error) {
 			false,
 			workDir,
 		),
-		Kayscript: NewFile("kayscript", filepath.Join(home, "KayScript"), 0o755, true, workDir,),
+		Kayscript: NewFile("kayscript", ProjectDir, 0o755, true, workDir,),
 	}, nil
 }
 
