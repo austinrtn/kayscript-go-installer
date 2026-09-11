@@ -68,6 +68,7 @@ func install() {
 		panic(err)
 	}
 	
+	fmt.Print("Updating files...\n")
 	targets.UdevRule.ReplaceFileText("__ROOT_SERVICE__", targets.UdevRule.DestPath)
 	targets.RootService.ReplaceFileText("__USER__", user.Username)
 	targets.RootService.ReplaceFileText("__SERVICE__", targets.UserService.DestPath)
