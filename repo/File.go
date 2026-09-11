@@ -33,6 +33,10 @@ func (file File) ReplaceFileText(old string, new string) error {
 		return fmt.Errorf("read %q: %w", file.Name, err)
 	}
 
+	if !strings.Contains(string(txt), old) {
+		return fmt.Errorf("Placeholder %q not found in %q", old, file.Name)
+	}
+	
 	new_txt := strings.ReplaceAll(string(txt), old, new)
 	err = os.WriteFile(file.TmpPath, []byte(new_txt), file.Mode)
 

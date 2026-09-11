@@ -29,7 +29,7 @@ func main() {
 		case "--c":
 			check()
 		default: 
-			panic("Invalid argument.\n--i: install kayscript\n--r: uninstall kayscript")
+			ChkErr(fmt.Errorf("Invalid argument.\n--i: install kayscript\n--r: uninstall kayscript"))
 	}
 }
 
@@ -38,49 +38,39 @@ func install() {
 	defer deinit()
 
 	err := os.Chdir(workDir)
-	if err != nil {
-		panic(err)
-	}
+	ChkErr(err)
 
 	fmt.Print("Downloading...\n")
-	if err = repo.DownloadRepo(); err != nil {
-		panic(err)
-	}
+	err = repo.DownloadRepo()
+	ChkErr(err)
 
 	fmt.Print("Extracting...\n")
 	kayscript_dest_path, err := filepath.Abs("kayscript.tar.gz")
-	if err != nil {
-		panic(err)
-	}
-	if err := cmds.Unarchive((kayscript_dest_path)); err != nil {
-		panic(err)
-	}
+	ChkErr(err)
+	
+	err = cmds.Unarchive(kayscript_dest_path)
+	ChkErr(err)
 
 	fmt.Print("Installing...\n")
 	os.Chdir(path.Join(workDir, "install_files"))
 	targets, err := repo.NewTargets(workDir)
-	if err != nil {
-		panic(err)
-	}
+	ChkErr(err)
 
 	user, err := user.Current()
-	if err != nil {
-		panic(err)
-	}
+	ChkErr(err)
 	
 	fmt.Print("Updating files...\n")
-	targets.UdevRule.ReplaceFileText("__ROOT_SERVICE__", targets.UdevRule.DestPath)
-	targets.RootService.ReplaceFileText("__USER__", user.Username)
-	targets.RootService.ReplaceFileText("__SERVICE__", targets.UserService.DestPath)
-	targets.SudoersRule.ReplaceFileText("__USER__", user.Username)
-	targets.SudoersRule.ReplaceFileText("__SCRIPT__", targets.Kayscript.DestPath)
-	targets.UserService.ReplaceFileText("__ROOT_SERVICE__", targets.Kayscript.DestPath)
+	ChkErr(targets.UdevRule.ReplaceFileText("__ROOT_SERVICE__", targets.UdevRule.DestPath))
+	ChkErr(targets.RootService.ReplaceFileText("__USER__", user.Username))
+	ChkErr(targets.RootService.ReplaceFileText("__SERVICE__", targets.UserService.DestPath))
+	ChkErr(targets.SudoersRule.ReplaceFileText("__USER__", user.Username))
+	ChkErr(targets.SudoersRule.ReplaceFileText("__SCRIPT__", targets.Kayscript.DestPath))
+	ChkErr(targets.UserService.ReplaceFileText("__ROOT_SERVICE__", targets.Kayscript.DestPath))
 
 	fmt.Print("Moving files...\n")
 	for _, file := range targets.All() {
-		if err := file.Install(); err != nil {
-			panic(err)
-		}
+		err := file.Install()
+		ChkErr(err)
 	}
 
 	fmt.Print("Kayscript Installed!\n")
@@ -141,5 +131,12 @@ func check() {
 		fmt.Printf("Path: %s\n", file.DestPath)
 		fmt.Printf("Exists: %s\n", fmt.Sprintf("%t", exists))
 		fmt.Print("________________________________\n")
+	}
+}
+
+func ChkErr(err error) {
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 }
