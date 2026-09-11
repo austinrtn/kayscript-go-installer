@@ -74,7 +74,7 @@ func install() {
 	targets.RootService.ReplaceFileText("__SERVICE__", targets.UserService.DestPath)
 	targets.SudoersRule.ReplaceFileText("__USER__", user.Username)
 	targets.SudoersRule.ReplaceFileText("__SCRIPT__", targets.Kayscript.DestPath)
-	targets.UserService.ReplaceFileText("__SCRIPT__", targets.Kayscript.DestPath)
+	targets.UserService.ReplaceFileText("__ROOT_SERVICE__", targets.Kayscript.DestPath)
 
 	fmt.Print("Moving files...\n")
 	for _, file := range targets.All() {
