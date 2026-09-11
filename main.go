@@ -136,6 +136,7 @@ func check() {
 
 func ChkErr(err error) {
 	if err != nil {
+		fmt.Println("ERROR")
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
