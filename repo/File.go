@@ -34,7 +34,7 @@ func (file File) ReplaceFileText(old string, new string) error {
 	}
 
 	new_txt := strings.ReplaceAll(string(txt), old, new)
-	err = os.WriteFile(file.DestPath, []byte(new_txt), file.Mode)
+	err = os.WriteFile(file.TmpPath, []byte(new_txt), file.Mode)
 
 	if err != nil {
 		return fmt.Errorf("write %q: %w", file.DestPath, err)

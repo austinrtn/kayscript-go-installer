@@ -76,6 +76,7 @@ func install() {
 	targets.SudoersRule.ReplaceFileText("__SCRIPT__", targets.Kayscript.DestPath)
 	targets.UserService.ReplaceFileText("__SCRIPT__", targets.Kayscript.DestPath)
 
+	fmt.Print("Moving files...\n")
 	for _, file := range targets.All() {
 		if err := file.Install(); err != nil {
 			panic(err)
