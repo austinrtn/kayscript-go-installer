@@ -48,7 +48,7 @@ func NewTargets(workDir string) (Targets, error) {
 			false,
 			workDir,
 		),
-		Kayscript: NewFile("kayscript", ProjectDir, 0o755, true, workDir,),
+		Kayscript: NewFile("kayscript", filepath.Join(ProjectDir, "kayscript"), 0o755, true, workDir,),
 	}, nil
 }
 

@@ -27,7 +27,7 @@ func NewFile(name string, destPath string, mode os.FileMode, rootOwned bool, wor
 	}
 }
 
-func ReplaceFileText(file File, old string, new string) error {
+func (file File) ReplaceFileText(old string, new string) error {
 	txt, err := os.ReadFile(file.TmpPath)
 	if err != nil {
 		return fmt.Errorf("read %q: %w", file.Name, err)
@@ -43,19 +43,30 @@ func ReplaceFileText(file File, old string, new string) error {
 	return nil
 }
 
-func Install(file File) error {
+func (file File)Install() error {
 	var err error = nil
+	mode := fmt.Sprintf("%04o", file.Mode.Perm())
 
 	if file.RootOwned {
-		err = cmds.InstallFileAsRoot(file.Mode.String(), file.TmpPath, file.DestPath)
+		err = cmds.InstallFileAsRoot(mode, file.TmpPath, file.DestPath)
 	} else {
-		err = cmds.InstallFile(file.Mode.String(), file.TmpPath, file.DestPath)
+		err = cmds.InstallFile(mode, file.TmpPath, file.DestPath)
 	}
 
 	if err != nil {
 		return fmt.Errorf("installing file: %w", err)
 	}
 	return nil
+}
+
+func (file File)Exists() (bool, error) {
+	exists, err := cmds.TestSudo(file.DestPath)
+	
+	if err != nil {
+		return false, fmt.Errorf("Error checking file status: %w", err)
+	}
+	
+	return exists, nil 
 }
 
 func GetHomeDir() (string, error) {
